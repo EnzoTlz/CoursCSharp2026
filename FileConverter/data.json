@@ -1,0 +1,58 @@
+{
+  "bibliotheque": {
+    "nom": "Bibliothèque Centrale",
+    "ville": "Paris",
+    "annee_fondation": 1850,
+    "livres": [
+      {
+        "id": 1,
+        "titre": "Le Petit Prince",
+        "auteur": {
+          "prenom": "Antoine",
+          "nom": "de Saint-Exupéry"
+        },
+        "annee": 1943,
+        "genres": ["conte", "philosophie"],
+        "disponible": true
+      },
+      {
+        "id": 2,
+        "titre": "Les Misérables",
+        "auteur": {
+          "prenom": "Victor",
+          "nom": "Hugo"
+        },
+        "annee": 1862,
+        "genres": ["roman", "historique"],
+        "disponible": false
+      },
+      {
+        "id": 3,
+        "titre": "L'Étranger",
+        "auteur": {
+          "prenom": "Albert",
+          "nom": "Camus"
+        },
+        "annee": 1942,
+        "genres": ["roman", "philosophie"],
+        "disponible": true
+      }
+    ],
+    "membres": [
+      {
+        "id": 101,
+        "prenom": "Marie",
+        "nom": "Dupont",
+        "age": 34,
+        "abonnement": "premium"
+      },
+      {
+        "id": 102,
+        "prenom": "Jean",
+        "nom": "Martin",
+        "age": 22,
+        "abonnement": "standard"
+      }
+    ]
+  }
+}

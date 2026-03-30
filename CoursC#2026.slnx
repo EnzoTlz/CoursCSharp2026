@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="CoursC#2026/CoursC#2026.csproj" />
+  <Project Path="FileConverter/FileConverter.csproj" Id="72156776-411b-49a2-9a20-ec6caf2653f0" />
   <Project Path="Zoo/ZooPrjt.csproj" Id="4a5b52ab-a6a0-4167-be72-27cbe21e23a0" />
 </Solution>
