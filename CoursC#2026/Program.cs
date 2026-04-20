@@ -1,19 +1,8 @@
-﻿Console.WriteLine("Rentre ton calcul !");
-string response = Console.ReadLine();
+﻿using CoursC_2026;
 
-char[] ops = ['+', '-', '*', '%'];
-int i = response.IndexOfAny(ops);
+var downloader = new ImageDownloader("C:/Users/Enzo/source/repos/CoursCSharp2026/CoursC#2026/images.json", "C:/Users/Enzo/source/repos/CoursCSharp2026/CoursC#2026/Images");
+await downloader.DownloadAllAsync();
 
-int number1 = int.Parse(response.Substring(0, i));
-int number2 = int.Parse(response.Substring(i + 1));
-char operatorCalcul = response[i];
-
-int result = operatorCalcul switch
-{
-    '+' => number1 + number2,
-    '-' => number1 - number2,
-    '*' => number1 * number2,
-    '%' => number1 % number2
-};
-
-Console.WriteLine($"result : {result}");
+var resizer = new ImageResizer("C:/Users/Enzo/source/repos/CoursCSharp2026/CoursC#2026/Images");
+resizer.ResizeSequential();
+resizer.ResizeParallel();
