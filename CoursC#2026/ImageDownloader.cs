@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 
+
 namespace CoursC_2026
 {
     internal class ImageDownloader

@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.Processing;
 using System.Diagnostics;
 using Image = SixLabors.ImageSharp.Image;
 
+
 namespace CoursC_2026
 {
     class ImageResizer
