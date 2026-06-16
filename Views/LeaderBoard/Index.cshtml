@@ -1,0 +1,40 @@
+﻿@model List<Eval.Controllers.LeaderboardController.LeaderboardRow>
+
+@{
+    ViewData["Title"] = "Classement";
+}
+
+<h1>Classement général</h1>
+<p>Le classement se met à jour à mesure que les résultats des matchs sont saisis.</p>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">Aucun pronostic pour le moment.</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 60px;">#</th>
+                <th>Joueur</th>
+                <th class="text-center">Pronostics</th>
+                <th class="text-center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var row = Model[i];
+                <tr>
+                    <td class="text-center fw-bold">@(i + 1)</td>
+                    <td>@row.DisplayName</td>
+                    <td class="text-center">@row.PredictionsCount</td>
+                    <td class="text-center">
+                        <span class="badge bg-primary">@row.TotalPoints pts</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
