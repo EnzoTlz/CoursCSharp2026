@@ -2,39 +2,65 @@
 
 @{
     ViewData["Title"] = "Classement";
+    var top3 = Model.Take(3).ToList();
+    var rest = Model.Skip(3).ToList();
 }
 
-<h1>Classement général</h1>
-<p>Le classement se met à jour à mesure que les résultats des matchs sont saisis.</p>
+<div class="section-intro">
+    <h1>Classement général</h1>
+    <p>Le classement se met à jour à mesure que les résultats des matchs sont saisis.</p>
+</div>
 
 @if (Model.Count == 0)
 {
-    <p class="text-muted">Aucun pronostic pour le moment.</p>
+    <div class="empty-state">
+        <p>Aucun pronostic pour le moment. Sois le premier à marquer des points !</p>
+    </div>
 }
 else
 {
-    <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th class="text-center" style="width: 60px;">#</th>
-                <th>Joueur</th>
-                <th class="text-center">Pronostics</th>
-                <th class="text-center">Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Count; i++)
+    @if (top3.Count > 0)
+    {
+        <div class="podium">
+            @for (int i = 0; i < top3.Count; i++)
             {
-                var row = Model[i];
-                <tr>
-                    <td class="text-center fw-bold">@(i + 1)</td>
-                    <td>@row.DisplayName</td>
-                    <td class="text-center">@row.PredictionsCount</td>
-                    <td class="text-center">
-                        <span class="badge bg-primary">@row.TotalPoints pts</span>
-                    </td>
-                </tr>
+                var row = top3[i];
+                var rank = i + 1;
+                <div class="podium-spot podium-@rank">
+                    <div class="podium-medal medal-@rank">@rank</div>
+                    <div class="podium-name">@row.DisplayName</div>
+                    <div class="podium-points">@row.TotalPoints <span>pts</span></div>
+                    <div class="podium-meta">@row.PredictionsCount pronostic@(row.PredictionsCount > 1 ? "s" : "")</div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    }
+
+    @if (rest.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 70px;">#</th>
+                    <th>Joueur</th>
+                    <th class="text-center">Pronostics</th>
+                    <th class="text-center">Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < rest.Count; i++)
+                {
+                    var row = rest[i];
+                    <tr>
+                        <td class="text-center rank-cell">@(i + 4)</td>
+                        <td>@row.DisplayName</td>
+                        <td class="text-center">@row.PredictionsCount</td>
+                        <td class="text-center">
+                            <span class="badge bg-primary">@row.TotalPoints pts</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }

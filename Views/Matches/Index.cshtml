@@ -4,49 +4,47 @@
     ViewData["Title"] = "Les matchs";
 }
 
-<h1>Matchs de la Coupe du Monde 2026</h1>
-<p>Pronostique les scores et grimpe au classement !</p>
+<div class="section-intro">
+    <h1>Matchs de la Coupe du Monde 2026</h1>
+    <p>Pronostique les scores et grimpe au classement.</p>
+</div>
 
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Match</th>
-            <th class="text-center">Score</th>
-            <th>Statut</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var match in Model)
-        {
-            <tr>
-                <td>@match.KickoffUtc.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@match.TeamA <span class="text-muted">vs</span> @match.TeamB</td>
-                <td class="text-center">
+<div class="match-list">
+    @foreach (var match in Model)
+    {
+        <div class="match-row">
+            <div class="match-date">
+                <span class="match-day">@match.KickoffUtc.ToString("dd/MM")</span>
+                <span class="match-time">@match.KickoffUtc.ToString("HH:mm")</span>
+            </div>
+            <div class="match-teams">
+                <span class="team team-a">@match.TeamA</span>
+                <span class="match-score">
                     @if (match.IsPlayed)
                     {
-                        <strong>@match.ScoreA - @match.ScoreB</strong>
+                        <strong>@match.ScoreA<span class="sep">:</span>@match.ScoreB</strong>
                     }
                     else
                     {
-                        <span class="text-muted">–</span>
+                        <span class="vs">VS</span>
                     }
-                </td>
-                <td>
-                    @if (match.IsPlayed)
-                    {
-                        <span class="badge bg-secondary">Terminé</span>
-                    }
-                    else if (match.KickoffUtc <= DateTime.Now)
-                    {
-                        <span class="badge bg-warning text-dark">En cours</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success">À venir</span>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </span>
+                <span class="team team-b">@match.TeamB</span>
+            </div>
+            <div class="match-status">
+                @if (match.IsPlayed)
+                {
+                    <span class="badge bg-secondary">Terminé</span>
+                }
+                else if (match.KickoffUtc <= DateTime.Now)
+                {
+                    <span class="badge bg-warning">En cours</span>
+                }
+                else
+                {
+                    <span class="badge bg-success">À venir</span>
+                }
+            </div>
+        </div>
+    }
+</div>

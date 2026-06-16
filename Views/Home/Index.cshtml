@@ -1,8 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Accueil";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero">
+    <span class="hero-badge">Coupe du Monde 2026</span>
+    <h1>Pronostique. Marque des points.<br /><span class="text-gold">Domine le classement.</span></h1>
+    <p class="hero-lead">
+        Prédis les scores des matchs de la Coupe du Monde, gagne des points selon la justesse
+        de tes pronostics et affronte les autres joueurs pour la première place.
+    </p>
+    <div class="hero-actions">
+        @if (User.Identity is not null && User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-gold btn-lg" asp-controller="Predictions" asp-action="Index">Faire mes pronostics</a>
+            <a class="btn btn-outline-gold btn-lg" asp-controller="Leaderboard" asp-action="Index">Voir le classement</a>
+        }
+        else
+        {
+            <a class="btn btn-gold btn-lg" asp-area="Identity" asp-page="/Account/Register">Créer un compte</a>
+            <a class="btn btn-outline-gold btn-lg" asp-area="Identity" asp-page="/Account/Login">Se connecter</a>
+        }
+    </div>
+</div>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-num">1</div>
+        <h3>Pronostique</h3>
+        <p>Saisis le score que tu imagines pour chaque match à venir. Modifiable jusqu'au coup d'envoi.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-num">2</div>
+        <h3>Marque des points</h3>
+        <p>Score exact : 3 points. Bon résultat : 1 point. Les points tombent dès la fin du match.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-num">3</div>
+        <h3>Grimpe au classement</h3>
+        <p>Compare ton total à celui des autres joueurs et vise la tête du classement général.</p>
+    </div>
 </div>

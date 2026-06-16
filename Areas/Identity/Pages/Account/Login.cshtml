@@ -1,0 +1,76 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Connexion";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - Mondial Pronos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="auth-body">
+    <div class="auth-split">
+        <aside class="auth-aside">
+            <a href="/" class="auth-brand">
+                <span class="auth-brand-mark">MP</span>
+                <span>Mondial Pronos</span>
+            </a>
+            <div class="auth-aside-content">
+                <h1>De retour dans la course.</h1>
+                <p>Reprends tes pronostics là où tu les as laissés et garde un œil sur le classement.</p>
+                <ul class="auth-points">
+                    <li><span>3</span> points pour un score exact</li>
+                    <li><span>1</span> point pour le bon résultat</li>
+                    <li><span>★</span> classement mis à jour en direct</li>
+                </ul>
+            </div>
+            <div class="auth-aside-foot">Coupe du Monde 2026</div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-form-box">
+                <h2 class="auth-h2">Connexion</h2>
+                <p class="auth-sub">Pas encore inscrit ? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Créer un compte</a></p>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.Email">Adresse e-mail</label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="ton@email.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="auth-field">
+                        <label asp-for="Input.Password">Mot de passe</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="••••••••" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="auth-row">
+                        <label class="auth-check">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a asp-page="./ForgotPassword">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button id="login-submit" type="submit" class="btn btn-gold w-100 btn-lg">Se connecter</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

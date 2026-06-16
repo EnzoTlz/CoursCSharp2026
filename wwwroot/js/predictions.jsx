@@ -6,12 +6,10 @@ function PredictionsApp() {
     const [savingId, setSavingId] = useState(null);
     const [savedId, setSavedId] = useState(null);
 
-    // Charger les matchs à venir au démarrage
     useEffect(() => {
         fetch('/Predictions/Upcoming')
             .then(res => res.json())
             .then(data => {
-                // On initialise les champs de saisie avec le prono existant (ou vide)
                 const withInputs = data.map(m => ({
                     ...m,
                     inputA: m.prediction ? m.prediction.predictedScoreA : '',
@@ -22,14 +20,12 @@ function PredictionsApp() {
             });
     }, []);
 
-    // Mettre à jour un champ de score localement
     function handleChange(id, side, value) {
         setMatches(matches.map(m =>
             m.id === id ? { ...m, [side]: value } : m
         ));
     }
 
-    // Envoyer un prono au serveur
     function handleSave(match) {
         setSavingId(match.id);
         setSavedId(null);
@@ -55,55 +51,62 @@ function PredictionsApp() {
 
     function formatDate(iso) {
         const d = new Date(iso);
-        return d.toLocaleString('fr-FR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
+        return {
+            day: d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }),
+            time: d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        };
     }
 
     if (loading) {
-        return <p>Chargement des matchs…</p>;
+        return <div className="pred-loading">Chargement des matchs…</div>;
     }
 
     if (matches.length === 0) {
-        return <p>Aucun match à venir pour le moment.</p>;
+        return (
+            <div className="empty-state">
+                <p>Aucun match à venir pour le moment. Reviens bientôt !</p>
+            </div>
+        );
     }
 
     return (
-        <div>
+        <div className="pred-list">
             {matches.map(match => {
                 const isValid = match.inputA !== '' && match.inputB !== '';
+                const hasPrediction = match.prediction !== null;
+                const date = formatDate(match.kickoff);
                 return (
-                    <div key={match.id} className="card mb-3">
-                        <div className="card-body">
-                            <div className="text-muted mb-2">{formatDate(match.kickoff)}</div>
-                            <div className="d-flex align-items-center gap-2 flex-wrap">
-                                <strong style={{ minWidth: '90px' }}>{match.teamA}</strong>
-                                <input
-                                    type="number" min="0" className="form-control"
-                                    style={{ width: '70px' }}
-                                    value={match.inputA}
-                                    onChange={e => handleChange(match.id, 'inputA', e.target.value)}
-                                />
-                                <span>–</span>
-                                <input
-                                    type="number" min="0" className="form-control"
-                                    style={{ width: '70px' }}
-                                    value={match.inputB}
-                                    onChange={e => handleChange(match.id, 'inputB', e.target.value)}
-                                />
-                                <strong style={{ minWidth: '90px' }}>{match.teamB}</strong>
-                                <button
-                                    className="btn btn-primary"
-                                    disabled={!isValid || savingId === match.id}
-                                    onClick={() => handleSave(match)}
-                                >
-                                    {savingId === match.id ? 'Enregistrement…' : 'Valider'}
-                                </button>
-                                {savedId === match.id && (
-                                    <span className="text-success">✓ Enregistré</span>
-                                )}
-                            </div>
+                    <div key={match.id} className="pred-card">
+                        <div className="pred-date">
+                            <span className="match-day">{date.day}</span>
+                            <span className="match-time">{date.time}</span>
+                        </div>
+                        <div className="pred-team pred-team-a">{match.teamA}</div>
+                        <div className="pred-inputs">
+                            <input
+                                type="number" min="0" className="form-control pred-score"
+                                value={match.inputA}
+                                onChange={e => handleChange(match.id, 'inputA', e.target.value)}
+                            />
+                            <span className="pred-sep">:</span>
+                            <input
+                                type="number" min="0" className="form-control pred-score"
+                                value={match.inputB}
+                                onChange={e => handleChange(match.id, 'inputB', e.target.value)}
+                            />
+                        </div>
+                        <div className="pred-team pred-team-b">{match.teamB}</div>
+                        <div className="pred-action">
+                            <button
+                                className="btn btn-gold btn-sm"
+                                disabled={!isValid || savingId === match.id}
+                                onClick={() => handleSave(match)}
+                            >
+                                {savingId === match.id ? '…' : (hasPrediction ? 'Modifier' : 'Valider')}
+                            </button>
+                            {savedId === match.id && (
+                                <span className="pred-saved">✓ Enregistré</span>
+                            )}
                         </div>
                     </div>
                 );
