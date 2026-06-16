@@ -109,6 +109,45 @@ namespace Eval.Controllers
             return View(predictions);
         }
 
+        // Recalcule et enregistre les points de tous les pronos d'un match donné
+        private async Task RecomputePointsForMatchAsync(int matchId)
+        {
+            var match = await _context.Matches.FindAsync(matchId);
+            if (match == null || !match.IsPlayed)
+            {
+                return;
+            }
+
+            var predictions = await _context.Predictions
+                .Where(p => p.MatchId == matchId)
+                .ToListAsync();
+
+            foreach (var p in predictions)
+            {
+                p.PointsAwarded = Eval.Services.ScoringService.ComputePoints(
+                    p.PredictedScoreA, p.PredictedScoreB,
+                    match.ScoreA!.Value, match.ScoreB!.Value);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        // TEMPORAIRE — recalcule les points de tous les matchs joués (pour tester)
+        public async Task<IActionResult> RecomputeAll()
+        {
+            var playedMatchIds = await _context.Matches
+                .Where(m => m.ScoreA != null && m.ScoreB != null)
+                .Select(m => m.Id)
+                .ToListAsync();
+
+            foreach (var id in playedMatchIds)
+            {
+                await RecomputePointsForMatchAsync(id);
+            }
+
+            return Content("Points recalculés pour tous les matchs joués.");
+        }
+
         // Petit objet pour recevoir les données du POST
         public class PredictionDto
         {
