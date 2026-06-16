@@ -1,0 +1,47 @@
+﻿@model List<Eval.Models.Match>
+
+@{
+    ViewData["Title"] = "Espace admin";
+}
+
+<h1>Espace admin — saisie des résultats</h1>
+<p>Saisis le score réel d'un match. Les points des joueurs sont recalculés automatiquement.</p>
+
+<table class="table align-middle">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Match</th>
+            <th class="text-center">Score actuel</th>
+            <th class="text-center">Saisir le résultat</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var match in Model)
+        {
+            <tr>
+                <td>@match.KickoffUtc.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@match.TeamA <span class="text-muted">vs</span> @match.TeamB</td>
+                <td class="text-center">
+                    @if (match.IsPlayed)
+                    {
+                        <strong>@match.ScoreA - @match.ScoreB</strong>
+                    }
+                    else
+                    {
+                        <span class="text-muted">–</span>
+                    }
+                </td>
+                <td class="text-center">
+                    <form asp-action="SetScore" method="post" class="d-inline-flex align-items-center gap-1 justify-content-center">
+                        <input type="hidden" name="matchId" value="@match.Id" />
+                        <input type="number" name="scoreA" min="0" value="@(match.ScoreA ?? 0)" class="form-control" style="width: 70px;" />
+                        <span>–</span>
+                        <input type="number" name="scoreB" min="0" value="@(match.ScoreB ?? 0)" class="form-control" style="width: 70px;" />
+                        <button type="submit" class="btn btn-sm btn-primary">Enregistrer</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
