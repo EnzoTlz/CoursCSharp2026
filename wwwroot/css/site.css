@@ -1082,3 +1082,76 @@ a:hover {
         justify-content: center;
     }
 }
+
+/* ===== Admin : création de match ===== */
+.admin-create {
+    background: linear-gradient(160deg, var(--fond-carte) 0%, var(--fond-2) 100%);
+    border: 1px solid var(--bordure);
+    border-radius: 16px;
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 2rem;
+}
+
+.admin-create-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.1rem;
+}
+
+.admin-create-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-create-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.admin-create-field label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--texte);
+    margin-bottom: 0.4rem;
+}
+
+.admin-list-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.admin-row {
+    grid-template-columns: 80px 1fr auto auto;
+}
+
+.admin-delete-form {
+    display: flex;
+}
+
+.btn-danger {
+    background: linear-gradient(120deg, #c0392b 0%, #922b21 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(120deg, #922b21 0%, #6e2018 100%);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+    .admin-row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-create-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

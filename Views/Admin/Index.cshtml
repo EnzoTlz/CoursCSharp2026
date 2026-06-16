@@ -6,8 +6,29 @@
 
 <div class="section-intro">
     <h1>Espace admin</h1>
-    <p>Saisis le score réel d'un match. Les points des joueurs sont recalculés automatiquement.</p>
+    <p>Gère les matchs et saisis les résultats. Les points sont recalculés automatiquement.</p>
 </div>
+
+<div class="admin-create">
+    <h2 class="admin-create-title">Ajouter un match</h2>
+    <form asp-action="CreateMatch" method="post" class="admin-create-form">
+        <div class="admin-create-field">
+            <label>Équipe A</label>
+            <input type="text" name="teamA" class="form-control" placeholder="France" required />
+        </div>
+        <div class="admin-create-field">
+            <label>Équipe B</label>
+            <input type="text" name="teamB" class="form-control" placeholder="Brésil" required />
+        </div>
+        <div class="admin-create-field">
+            <label>Coup d'envoi</label>
+            <input type="datetime-local" name="kickoff" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    </form>
+</div>
+
+<h2 class="admin-list-title">Matchs existants</h2>
 
 <div class="match-list">
     @foreach (var match in Model)
@@ -27,7 +48,12 @@
                 <input type="number" name="scoreA" min="0" value="@(match.ScoreA ?? 0)" class="form-control admin-score" />
                 <span class="sep">:</span>
                 <input type="number" name="scoreB" min="0" value="@(match.ScoreB ?? 0)" class="form-control admin-score" />
-                <button type="submit" class="btn btn-gold btn-sm">Enregistrer</button>
+                <button type="submit" class="btn btn-gold btn-sm">Score</button>
+            </form>
+            <form asp-action="DeleteMatch" method="post" class="admin-delete-form"
+                  onsubmit="return confirm('Supprimer ce match ? Les pronostics liés seront aussi supprimés.');">
+                <input type="hidden" name="matchId" value="@match.Id" />
+                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
             </form>
         </div>
     }

@@ -69,5 +69,43 @@ namespace Eval.Controllers
 
             await _context.SaveChangesAsync();
         }
+
+        // Créer un nouveau match
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMatch(string teamA, string teamB, DateTime kickoff)
+        {
+            if (string.IsNullOrWhiteSpace(teamA) || string.IsNullOrWhiteSpace(teamB))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var match = new Eval.Models.Match
+            {
+                TeamA = teamA.Trim(),
+                TeamB = teamB.Trim(),
+                KickoffUtc = kickoff
+            };
+
+            _context.Matches.Add(match);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Supprimer un match (et ses pronostics liés, via la cascade)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMatch(int matchId)
+        {
+            var match = await _context.Matches.FindAsync(matchId);
+            if (match != null)
+            {
+                _context.Matches.Remove(match);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
