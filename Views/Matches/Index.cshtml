@@ -1,0 +1,48 @@
+﻿@model List<Eval.Models.Match>
+
+@{
+    ViewData["Title"] = "Les matchs";
+}
+
+<h1>Matchs de la Coupe du Monde 2026</h1>
+<p>Pronostique les scores et grimpe au classement !</p>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Match</th>
+            <th class="text-center">Score</th>
+            <th>Statut</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var match in Model)
+        {
+            <tr>
+                <td>@match.KickoffUtc.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@match.TeamA <span class="text-muted">vs</span> @match.TeamB</td>
+                <td class="text-center">
+                    @if (match.IsPlayed)
+                    {
+                        <strong>@match.ScoreA - @match.ScoreB</strong>
+                    }
+                    else
+                    {
+                        <span class="text-muted">–</span>
+                    }
+                </td>
+                <td>
+                    @if (match.IsPlayed)
+                    {
+                        <span class="badge bg-secondary">Terminé</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">À venir</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
