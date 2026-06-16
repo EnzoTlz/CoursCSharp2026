@@ -4,6 +4,7 @@ using Eval.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Eval.Controllers
 {
@@ -105,6 +106,113 @@ namespace Eval.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportFromApi()
+        {
+            var url = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
+
+            using var httpClient = new HttpClient();
+            string json;
+            try
+            {
+                json = await httpClient.GetStringAsync(url);
+            }
+            catch
+            {
+                TempData["ImportError"] = "Impossible de contacter l'API. Réessaie plus tard.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var data = JsonSerializer.Deserialize<Eval.Models.WorldCupData>(json);
+            if (data == null || data.Matches.Count == 0)
+            {
+                TempData["ImportError"] = "Aucune donnée reçue de l'API.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // On charge les matchs déjà en base une seule fois
+            var existingMatches = await _context.Matches.ToListAsync();
+
+            int added = 0;
+            int updated = 0;
+            var matchesToRecompute = new List<int>();
+
+            foreach (var m in data.Matches)
+            {
+                // --- Parsing de l'heure (comme avant) ---
+                DateTime kickoff;
+                var rawTime = (m.Time ?? "").Trim();
+                var parts = rawTime.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var timeOnly = parts.Length > 0 ? parts[0] : "00:00";
+
+                int offsetHours = 0;
+                if (parts.Length > 1 && parts[1].StartsWith("UTC"))
+                {
+                    int.TryParse(parts[1].Substring(3), out offsetHours);
+                }
+
+                if (DateTime.TryParse($"{m.Date} {timeOnly}", out var localStadium))
+                {
+                    kickoff = localStadium.AddHours(-offsetHours + 2);
+                }
+                else
+                {
+                    kickoff = DateTime.Now;
+                }
+
+                // --- Score de l'API (peut être null) ---
+                int? scoreA = m.Score?.Ft != null && m.Score.Ft.Count == 2 ? m.Score.Ft[0] : null;
+                int? scoreB = m.Score?.Ft != null && m.Score.Ft.Count == 2 ? m.Score.Ft[1] : null;
+
+                // --- On cherche le match correspondant en base (mêmes équipes) ---
+                var existing = existingMatches.FirstOrDefault(e =>
+                    e.TeamA == m.Team1 && e.TeamB == m.Team2);
+
+                if (existing == null)
+                {
+                    // Match inconnu -> on l'ajoute
+                    _context.Matches.Add(new Eval.Models.Match
+                    {
+                        TeamA = m.Team1,
+                        TeamB = m.Team2,
+                        KickoffUtc = kickoff,
+                        ScoreA = scoreA,
+                        ScoreB = scoreB
+                    });
+                    added++;
+                }
+                else
+                {
+                    // Match connu -> on met à jour la date, et le score SEULEMENT si l'API en a un
+                    existing.KickoffUtc = kickoff;
+
+                    if (scoreA.HasValue && scoreB.HasValue)
+                    {
+                        // On ne réécrit que si le score a changé (évite des recalculs inutiles)
+                        if (existing.ScoreA != scoreA || existing.ScoreB != scoreB)
+                        {
+                            existing.ScoreA = scoreA;
+                            existing.ScoreB = scoreB;
+                            matchesToRecompute.Add(existing.Id);
+                            updated++;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Recalcul des points pour les matchs dont le score vient de changer
+            foreach (var id in matchesToRecompute)
+            {
+                await RecomputePointsForMatchAsync(id);
+            }
+
+            TempData["ImportOk"] = $"Import terminé : {added} match(s) ajouté(s), {updated} score(s) mis à jour. Pronostics conservés.";
             return RedirectToAction(nameof(Index));
         }
     }

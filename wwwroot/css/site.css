@@ -1155,3 +1155,48 @@ a:hover {
         align-items: stretch;
     }
 }
+
+/* ===== Admin import API ===== */
+.admin-import {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    background: linear-gradient(160deg, var(--fond-carte) 0%, var(--fond-2) 100%);
+    border: 1px solid var(--bordure-claire);
+    border-radius: 16px;
+    padding: 1.3rem 1.6rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.admin-import strong {
+    font-family: 'Outfit', sans-serif;
+    color: var(--texte);
+    font-size: 1.05rem;
+}
+
+.admin-import p {
+    margin: 0.3rem 0 0;
+    font-size: 0.88rem;
+    color: var(--texte-doux);
+}
+
+.alert-ok, .alert-err {
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+}
+
+.alert-ok {
+    background: rgba(22, 163, 95, 0.15);
+    border: 1px solid var(--vert-vif);
+    color: #7ce0ad;
+}
+
+.alert-err {
+    background: rgba(192, 57, 43, 0.15);
+    border: 1px solid #c0392b;
+    color: #e88;
+}

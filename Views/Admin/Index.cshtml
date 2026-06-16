@@ -9,6 +9,26 @@
     <p>Gère les matchs et saisis les résultats. Les points sont recalculés automatiquement.</p>
 </div>
 
+@if (TempData["ImportOk"] != null)
+{
+    <div class="alert-ok">@TempData["ImportOk"]</div>
+}
+@if (TempData["ImportError"] != null)
+{
+    <div class="alert-err">@TempData["ImportError"]</div>
+}
+
+<div class="admin-import">
+    <div>
+        <strong>Synchroniser les scores depuis l'API</strong>
+        <p>Récupère les matchs et résultats de la Coupe du Monde 2026. Ajoute les nouveaux matchs et met à jour les scores. Les pronostics sont conservés.</p>
+    </div>
+    <form asp-action="ImportFromApi" method="post"
+          onsubmit="return confirm('Synchroniser les matchs et scores depuis l\'API ? Les pronostics seront conservés.');">
+        <button type="submit" class="btn btn-primary">Synchroniser</button>
+    </form>
+</div>
+
 <div class="admin-create">
     <h2 class="admin-create-title">Ajouter un match</h2>
     <form asp-action="CreateMatch" method="post" class="admin-create-form">
