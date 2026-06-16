@@ -37,6 +37,10 @@
                     {
                         <span class="badge bg-secondary">Terminé</span>
                     }
+                    else if (match.KickoffUtc <= DateTime.Now)
+                    {
+                        <span class="badge bg-warning text-dark">En cours</span>
+                    }
                     else
                     {
                         <span class="badge bg-success">À venir</span>

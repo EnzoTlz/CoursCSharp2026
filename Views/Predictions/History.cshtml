@@ -1,0 +1,55 @@
+﻿@model List<Eval.Models.Prediction>
+
+@{
+    ViewData["Title"] = "Mes pronostics passés";
+}
+
+<h1>Mes pronostics passés</h1>
+<p>Retrouve ici tes pronostics sur les matchs déjà commencés.</p>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">Tu n'as pas encore de pronostic sur un match commencé.</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Match</th>
+                <th class="text-center">Ton prono</th>
+                <th class="text-center">Score réel</th>
+                <th class="text-center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Match.TeamA <span class="text-muted">vs</span> @p.Match.TeamB</td>
+                    <td class="text-center">@p.PredictedScoreA - @p.PredictedScoreB</td>
+                    <td class="text-center">
+                        @if (p.Match.IsPlayed)
+                        {
+                            <strong>@p.Match.ScoreA - @p.Match.ScoreB</strong>
+                        }
+                        else
+                        {
+                            <span class="text-muted">En attente du résultat</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        @if (p.Match.IsPlayed)
+                        {
+                            <span class="badge bg-primary">@p.PointsAwarded pts</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">–</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

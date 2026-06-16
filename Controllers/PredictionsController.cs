@@ -94,6 +94,21 @@ namespace Eval.Controllers
             return Ok();
         }
 
+        // Page de consultation : mes pronos sur les matchs déjà commencés
+        public async Task<IActionResult> History()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var now = DateTime.Now;
+
+            var predictions = await _context.Predictions
+                .Where(p => p.UserId == userId && p.Match.KickoffUtc <= now)
+                .Include(p => p.Match)
+                .OrderByDescending(p => p.Match.KickoffUtc)
+                .ToListAsync();
+
+            return View(predictions);
+        }
+
         // Petit objet pour recevoir les données du POST
         public class PredictionDto
         {
